@@ -1,4 +1,4 @@
-import { Model, model, Schema, Types } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 
 export interface IArticle {
   title: string;
@@ -8,8 +8,6 @@ export interface IArticle {
   comments: Types.DocumentArray<IComment>;
 }
 
-type ArticleModelType = Model<IArticle, {}, {}>;
-
 interface IComment {
   content: string;
 }
@@ -18,7 +16,7 @@ export const CommentSchema = new Schema<IComment>({
   content: String,
 });
 
-export const ArticleSchema = new Schema<IArticle>({
+export const ArticleSchema = new Schema({
   title: {
     unique: true,
     type: String,
@@ -47,4 +45,4 @@ export const ArticleSchema = new Schema<IArticle>({
   comments: [CommentSchema],
 });
 
-export const ArticleModel = model<IArticle,ArticleModelType>("article", ArticleSchema);
+export const ArticleModel = model<IArticle>("article", ArticleSchema);

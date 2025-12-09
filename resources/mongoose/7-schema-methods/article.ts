@@ -1,4 +1,4 @@
-import { HydratedDocument, Model, model, Schema, Types } from "mongoose";
+import { Model, model, Schema, Types } from "mongoose";
 
 interface IArticle {
   title: string;
@@ -10,20 +10,19 @@ interface IArticle {
   }>;
 }
 
-interface IArticleMethods {
+interface ArticleMethods {
   slugify(): string;
+}
+
+interface ArticleVirtuals {
   readable: string;
 }
 
-interface ArticleModel extends Model<IArticle, {}, IArticleMethods> {
-  findWithOnlyAuthors(): Promise<HydratedDocument<IArticle, IArticleMethods>>;
+interface ArticleStatics {
+  findWithOnlyAuthors(): Promise<IArticle[]>;
 }
 
-export const articleSchema = new Schema<
-  IArticle,
-  ArticleModel,
-  IArticleMethods
->({
+export const articleSchema = new Schema<IArticle, Model<IArticle>, ArticleMethods, {}, ArticleVirtuals, ArticleStatics>({
   title: {
     unique: true,
     type: String,
@@ -54,29 +53,31 @@ export const articleSchema = new Schema<
       content: String,
     },
   ],
+}, {
+  methods: {
+    slugify() {
+      return this.title.replace(" ", "-");
+    },
+  },
+  statics: {
+    findWithOnlyAuthors() {
+      return this.find({
+        author: {
+          $exists: true,
+        },
+      });
+    },
+  },
+  virtuals: {
+    readable: {
+      get() {
+        return `${this.title} - ${this.author}`;
+      },
+    },
+  }
 });
 
-articleSchema.methods.slugify = function (
-  this: HydratedDocument<IArticle, IArticleMethods>
-) {
-  return this.title.replace(" ", "-");
-};
-
-articleSchema.statics.findWithOnlyAuthors = function () {
-  return this.find({
-    author: {
-      $exists: true,
-    },
-  });
-};
-
-articleSchema
-  .virtual("readable")
-  .get(function (this: HydratedDocument<IArticle, IArticleMethods>) {
-    return `${this.title} - ${this.author}`;
-  });
-
-export const ArticleModel = model<IArticle>(
+export const ArticleModel = model(
   "article",
   articleSchema
 );

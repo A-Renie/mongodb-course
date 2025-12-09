@@ -8,7 +8,7 @@ async function init() {
     const conn = await mongoose.connect(
       "mongodb://root:test123@localhost:27017/blog?authSource=admin"
     );
-    console.log("Connected to", conn.connection.db.databaseName);
+    console.log("Connected to", conn.connection.db?.databaseName);
   } catch (e) {
     console.error("Failed to connect to server",e);
   }
@@ -32,11 +32,17 @@ async function init() {
 
   const articles = await Promise.all([
     // return object
-    ArticleModel.findById(newArticle._id, ["title"]),
+    ArticleModel.findById(newArticle._id, {
+      title: 1,
+    }),
     // return array
-    ArticleModel.find({ _id : newArticle._id }, ["title"]),
+    ArticleModel.find({ _id : newArticle._id }, {
+      title: 1,
+    }),
     // return object
-    ArticleModel.findOne({ _id : newArticle._id }, ["title"])
+    ArticleModel.findOne({ _id : newArticle._id }, {
+      title: 1,
+    })
   ]);
   
   console.log(articles);

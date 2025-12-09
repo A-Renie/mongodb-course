@@ -6,6 +6,10 @@ echo "====================="
 ls /
 cd /dataset
 
+# Conversion des fins de ligne CRLF vers LF
+find . -type f -name "*.json" -exec dos2unix {} \; 2>/dev/null || \
+find . -type f -name "*.json" -exec sed -i 's/\r$//' {} \;
+
 for directory in *; do
     if [ -d "${directory}" ] ; then
         echo "$directory"
