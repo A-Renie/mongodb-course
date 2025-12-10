@@ -1,8 +1,6 @@
 let db = connect("mongodb://root:test123@localhost:27017?authSource=admin");
-db=db.getSiblingDB("formateur")
+db=db.getSiblingDB("technocite");
 
-const inserted = db.students.insertOne({
-    name:"Amaury"
-})
+const students = db.students.find();
 
-console.log(inserted)
+console.log(students)
