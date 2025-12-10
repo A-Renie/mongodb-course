@@ -118,27 +118,40 @@ db = db.getSiblingDB('sample_mflix');
 // .limit(100);
 
 // ================== qui ont une note IMDB supérieure à 8.0 et un rating supérieur à 8 des critiques
-const movies = db.movies
- .find({
- $and: [
-{ "imdb.rating": {$gte:8} },
-{ "tomatoes.critic.rating": {$gte:8} }
- ]
- })
-.projection({
-    title: true,
-    year: true,
-    "imdb.rating":true,
-    "tomatoes.critic.rating":true,
-    _id: false
-})
-.sort({
-    year: 1
-})
-.limit(100);
+// const movies = db.movies
+//  .find({
+//  $and: [
+// { "imdb.rating": {$gte:8} },
+// { "tomatoes.critic.rating": {$gte:8} }
+//  ]
+//  })
+// .projection({
+//     title: true,
+//     year: true,
+//     "imdb.rating":true,
+//     "tomatoes.critic.rating":true,
+//     _id: false
+// })
+// .sort({
+//     year: 1
+// })
+// .limit(100);
 
 
 // console.log(movies);
+
+// const upsertResult = db.movies.updateOne({
+//     year: -999
+// }, {
+//     $set: {
+//         title: "Jurassic Pâques"
+//     }
+// },{
+//     upsert: true
+// });
+
+// console.log(upsertResult);
+
 
 // let db = connect("mongodb://root:test123@localhost:27017?authSource=admin");
 
@@ -169,4 +182,56 @@ const movies = db.movies
 // });
 
 // console.log(updateResult);
+
+
+// // ================== <Augmenter a 5 tous les films où Charlize Theron a joué
+// db.movies
+//  .updateMany(
+//     {cast:"Charlize Theron"},
+//     {$set:{"imdb.rating":5}}
+//  )
+
+// ================== Supprimer les films réalisés par Harald Zwart
+// db.movies
+//  .deleteMany(
+//     {directors:"Harald Zwart"}
+//  )
+
+ // // ================== Ajouter l'acteur Key Key aux films "+1" et "Anamorph".
+// db.movies
+//  .updateMany(
+//     {title:["+1","Anamorph"]},
+//     {$push:{cast:"Key Key"}}
+//  )
+
+  // ================== Supprimmez "Keanu Reeves" de "The Matrix".
+// db.movies
+//  .updateOne(
+//     {title:"The Matrix"},
+//     {$pull:{cast:"Keanu Reeves"}}
+//  )
+
+// let matrix = db.movies.find(
+//     {title:"The Matrix"}
+// )
+
+// console.log(matrix)
+
+  // ================== Remplacez "Jurassic Park" par le film "The Matrix".
+const jurassic=db.movies.find(
+    {title:"Jurassic Park"}
+)
+console.log(jurassic)
+
+db.movies
+ .replaceOne(
+    {title:"The Matrix"},
+    jurassic[0]
+ )
+
+
+
+
+
+
 
