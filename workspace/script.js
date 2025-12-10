@@ -130,6 +130,8 @@ const movies = db.movies
 .projection({
     title: true,
     year: true,
+    "imdb.rating":true,
+    "tomatoes.critic.rating":true,
     _id: false
 })
 .sort({
