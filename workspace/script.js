@@ -1,6 +1,18 @@
 let db = connect("mongodb://root:test123@localhost:27017?authSource=admin");
-db=db.getSiblingDB("technocite");
+// USE technocite
+db = db.getSiblingDB('sample_mflix');
 
-const students = db.students.find({name:"Jean Sebastien"});
+// SELECT title FROM movies WHERE released IS NULL
+const movies = db.movies
+.find({
+    released:  {
+        $exists: false
+    }
+})
+.projection({
+    title: true,
+    _id: false
+});
 
-console.log(students)
+console.log(movies);
+
