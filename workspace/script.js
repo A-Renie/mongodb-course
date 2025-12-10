@@ -223,6 +223,13 @@ const jurassic=db.movies.find(
 )
 console.log(jurassic)
 
+const theMatrix = db.movies.findOne({
+    title: 'The Matrix'
+});
+
+//Sinon on ne peux pas surcharger l'id en faisant le replace
+delete theMatrix._id;
+
 db.movies
  .replaceOne(
     {title:"The Matrix"},
